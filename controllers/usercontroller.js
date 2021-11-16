@@ -15,12 +15,14 @@ router.post("/register", async (req, res) => {
       password: bcrypt.hashSync(password, 13),
     });
 
-    let token = jwt.sign({id: User.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24})
+    let token = jwt.sign({ id: User.id }, process.env.JWT_SECRET, {
+      expiresIn: 60 * 60 * 24,
+    });
 
     res.status(201).json({
       message: "User successfully registered",
       user: User,
-      sessionToken: token
+      sessionToken: token,
     });
   } catch (err) {
     if (err instanceof UniqueConstraintError) {
@@ -45,19 +47,24 @@ router.post("/login", async (req, res) => {
       },
     });
     if (loginUser) {
-        let passwordComparison = await bcrypt.compare(password, loginUser.password);
-        if (passwordComparison){
-        let token = jwt.sign({id: loginUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
-      res.status(200).json({
-        user: loginUser,
-        message: "User successfully logged in!",
-        sessionToken: token
-      });
-    } else {
+      let passwordComparison = await bcrypt.compare(
+        password,
+        loginUser.password
+      );
+      if (passwordComparison) {
+        let token = jwt.sign({ id: loginUser.id }, process.env.JWT_SECRET, {
+          expiresIn: 60 * 60 * 24,
+        });
+        res.status(200).json({
+          user: loginUser,
+          message: "User successfully logged in!",
+          sessionToken: token,
+        });
+      } else {
         res.status(401).json({
-            message: "Incorrect email or password",
-        })
-    }
+          message: "Incorrect email or password",
+        });
+      }
     } else {
       res.status(401).json({
         message: "Incorrect email or password",
@@ -70,34 +77,33 @@ router.post("/login", async (req, res) => {
   }
 });
 
-/*Get all users *//*Needs locked behind admin */
-router.get('/', async (req, res) => {
-    try{
-        let User = await UserModel.findAll();
-        res.status(200).json(User);
-    } catch (err) {
-        res.status(500).json({error: err});
-    }
+/*Get all users */ /*Needs locked behind admin */
+router.get("/", async (req, res) => {
+  try {
+    let User = await UserModel.findAll();
+    res.status(200).json(User);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
 });
 
-/*Delete users*//*Needs locked behind admin*/ 
-/!Endpoint not working !/
-// router.get('/delete/:id', async (req, res) => {
-//     try {
-//         const query = {
-//             where: {
-//             id: req.body.user
-//             }
-//         }
-//         await UserModel.destroy(query)
-//         res.status(200).json({
-//             message: 'User has successfully been deleted'
-//         });
-//     } catch (err) {
-//         res.status(500).json({
-//             message: "Error: User has not been deleted"
-//         })
-//     }
-// })
+/*Delete users*/ /*Needs locked behind admin*/
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const query = {
+      where: {
+        id: req.params.id
+      },
+    };
+    await UserModel.destroy(query);
+    res.status(200).json({
+      message: "User has successfully been deleted",
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error: User has not been deleted",
+    });
+  }
+});
 
 module.exports = router;
