@@ -1,18 +1,23 @@
-const Express = require('express');
+const Express = require("express");
 const app = Express();
-const dbConnection = require('./db');
+const dbConnection = require("./db");
 
-const controllers = require('./controllers');
+const controllers = require("./controllers");
+app.use(Express.json());
 
-app.use('/campsite', controllers.campController);
 
-     dbConnection.authenticate()
-       .then(() => dbConnection.sync())
-       .then(() => {
-          app.listen(3000, () => {
-             console.log(`[Server]: App is listening on 3000.`);
-          });
-       })
-       .catch((err) => {
-          console.log(`[Server]: Server crashed. Error = ${err}`);
-       });
+
+app.use("/campsite", controllers.campController);
+app.use("/user", controllers.userController);
+
+dbConnection
+  .authenticate()
+  .then(() => dbConnection.sync())
+  .then(() => {
+    app.listen(3000, () => {
+      console.log(`[Server]: App is listening on 3000.`);
+    });
+  })
+  .catch((err) => {
+    console.log(`[Server]: Server crashed. Error = ${err}`);
+  });
