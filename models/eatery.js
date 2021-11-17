@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db");
 
-const Eatery = db.define('eatery', {
-    name: {
+const Eatery = db.define("eatery", {
+    eateryName: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,
@@ -22,6 +22,11 @@ const Eatery = db.define('eatery', {
         allowNull: true,
         unique: false,
     },
+    owner_id:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        // unique: false,
+    }
 });
 
 module.exports = Eatery
