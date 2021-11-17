@@ -1,4 +1,9 @@
 const UserModel = require('./user');
-// const ReviewModel = require('./review');
+const CampsiteModel = require('./campsite');
+const EateryModel = require('./eatery');
 
-module.exports = {UserModel};
+module.exports = {
+    UserModel,
+    CampsiteModel,
+    EateryModel
+};
