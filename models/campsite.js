@@ -22,6 +22,11 @@ const Campsite = db.define("campsite", {
         allowNull: true,
         unique: false,
     },
+    owner_id:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true,
+    }
 });
 
 module.exports = Campsite
