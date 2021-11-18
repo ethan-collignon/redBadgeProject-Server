@@ -22,11 +22,6 @@ const Eatery = db.define("eatery", {
         allowNull: true,
         unique: false,
     },
-    owner_id:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        // unique: false,
-    }
 });
 
 module.exports = Eatery

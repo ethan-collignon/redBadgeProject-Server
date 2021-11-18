@@ -3,6 +3,7 @@ const { UserModel } = require("../models");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const models = require("../models");
 
 /*Register a new User*/
 router.post("/register", async (req, res) => {
@@ -36,6 +37,12 @@ router.post("/register", async (req, res) => {
     }
   }
 });
+
+
+
+
+
+
 
 /*Login a user */
 router.post("/login", async (req, res) => {

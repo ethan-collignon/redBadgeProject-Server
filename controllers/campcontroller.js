@@ -1,10 +1,35 @@
 const Express = require("express");
 const router = Express.Router();
 const validateJWT = require("../middleware/validate-jwt");
+const models = require("../models");
 const { CampsiteModel } = require("../models");
 
 
 /*Campsite Review Create*/
+// router.post('/create', async (req, res) => {
+//   const {siteName, review, cost, rating } = req.body.campsite;
+//   try {
+//     await models.CampsiteModel.create({
+//       siteName: siteName,
+//       review: review,
+//       cost: cost,
+//       rating: rating,
+//       userId: req.user.id
+//     })
+//     .then(
+//       campsite => {
+//         res.status(201).json({
+//           campsite: campsite,
+//           message: 'Campsite review created!'
+//         });
+//       }
+//     )
+//   } catch (err) {
+//     res.status(500).json({
+//       error: `Failed to create review: ${err}`
+//     });
+//   };
+// });
 router.post("/create", validateJWT, async (req, res) => {
   const { siteName, review, cost, rating,} = req.body.campsite;
   // const { id } = req.user;
@@ -13,7 +38,8 @@ router.post("/create", validateJWT, async (req, res) => {
     review,
     cost,
     rating,
-    owner_id: req.user.id
+    userId: req.user.id
+    // owner_id: req.user.id
   }
   try {
     const newCampsiteEntry = await CampsiteModel.create(campsiteEntry);
@@ -41,7 +67,8 @@ router.get("/:id", validateJWT, async (req, res) => {
   try{
     const userCampReviews = await CampsiteModel.findAll({
       where: {
-        owner_id: req.user.id
+        userId: req.user.id
+        // owner_id: req.user.id
       }
     });
     res.status(200).json(userCampReviews);
@@ -57,8 +84,9 @@ router.put("/update/:id", validateJWT, async (req, res) => {
   try {
     const updatedCampsiteReview = await CampsiteModel.update({ siteName, review, cost, rating },
       {where: {
-        id: req.params.id,
-        owner_id: req.user.id
+        // id: req.params.id, idk if I need this anymore after added the DB Asso
+        userId: req.user.id
+        // owner_id: req.user.id
       }})
       res.status(200).json({ message: "updated successfully", updatedCampsiteReview})
   } catch (err){
@@ -72,8 +100,9 @@ router.delete("/delete/:id", validateJWT, async (req, res) => {
   try{
     const query = {
       where: {
-        id: req.params.id,
-        owner_id: req.user.id
+        // id: req.params.id, same as above
+        userId: req.user.id
+        // owner_id: req.user.id
       }
     }
     await CampsiteModel.destroy(query)
