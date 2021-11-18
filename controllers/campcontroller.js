@@ -6,30 +6,6 @@ const { CampsiteModel } = require("../models");
 
 
 /*Campsite Review Create*/
-// router.post('/create', async (req, res) => {
-//   const {siteName, review, cost, rating } = req.body.campsite;
-//   try {
-//     await models.CampsiteModel.create({
-//       siteName: siteName,
-//       review: review,
-//       cost: cost,
-//       rating: rating,
-//       userId: req.user.id
-//     })
-//     .then(
-//       campsite => {
-//         res.status(201).json({
-//           campsite: campsite,
-//           message: 'Campsite review created!'
-//         });
-//       }
-//     )
-//   } catch (err) {
-//     res.status(500).json({
-//       error: `Failed to create review: ${err}`
-//     });
-//   };
-// });
 router.post("/create", validateJWT, async (req, res) => {
   const { siteName, review, cost, rating,} = req.body.campsite;
   // const { id } = req.user;
