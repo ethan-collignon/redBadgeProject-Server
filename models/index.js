@@ -1,4 +1,21 @@
-const UserModel = require('./user');
-// const ReviewModel = require('./review');
+// const db = require('../db'); This was in the db
 
-module.exports = {UserModel};
+const UserModel = require('./user');
+const CampsiteModel = require('./campsite');
+const EateryModel = require('./eatery');
+
+UserModel.hasMany(CampsiteModel);
+UserModel.hasMany(EateryModel);
+
+CampsiteModel.belongsTo(UserModel);
+EateryModel.belongsTo(UserModel);
+
+
+module.exports = {
+    dbConnection: this.dbConnection,
+    
+    UserModel,
+    CampsiteModel,
+    EateryModel
+    
+};

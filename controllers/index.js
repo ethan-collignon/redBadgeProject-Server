@@ -1,4 +1,5 @@
 module.exports = {
     userController: require('./usercontroller'),
-    campController: require('./campcontroller')
+    campController: require('./campcontroller'),
+    eateryController: require('./foodcontroller')
 };

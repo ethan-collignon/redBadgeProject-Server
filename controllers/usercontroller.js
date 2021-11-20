@@ -3,16 +3,20 @@ const { UserModel } = require("../models");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const models = require("../models");
+const { AccessControl, Permission } = require("accesscontrol");
+const validateJWT = require("../middleware/validate-jwt");
 
 /*Register a new User*/
 router.post("/register", async (req, res) => {
-  let { firstName, lastName, email, password } = req.body.user;
+  let { firstName, lastName, email, password, role } = req.body.user;
   try {
     const User = await UserModel.create({
       firstName,
       lastName,
       email,
       password: bcrypt.hashSync(password, 13),
+      role,
     });
 
     let token = jwt.sign({ id: User.id }, process.env.JWT_SECRET, {
@@ -36,6 +40,7 @@ router.post("/register", async (req, res) => {
     }
   }
 });
+
 
 /*Login a user */
 router.post("/login", async (req, res) => {
@@ -77,33 +82,54 @@ router.post("/login", async (req, res) => {
   }
 });
 
-/*Get all users */ /*Needs locked behind admin */
-router.get("/", async (req, res) => {
-  try {
-    let User = await UserModel.findAll();
-    res.status(200).json(User);
-  } catch (err) {
-    res.status(500).json({ error: err });
+
+
+//Access Controlled Endpoints
+const ac = new AccessControl();
+
+ac.grant("admin").readAny("getUsers").deleteAny("delete");
+ac.grant("user")
+
+/*Get all users */ /*locked behind admin */
+router.get("/getUsers", validateJWT, async (req, res) => {
+  const Permission = ac.can(req.user.role).readAny("getUsers")
+  if(Permission.granted) {
+    try {
+      const user = await models.UserModel.findAll();
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(500).json({ error: err });
+    }
+  } else {
+    res.status(403).json({ message: "Not an Admin."})
   }
 });
 
-/*Delete users*/ /*Needs locked behind admin*/
-router.delete("/delete/:id", async (req, res) => {
+
+/*Delete users*/ /*locked behind admin*/
+router.delete("/delete/:id", validateJWT, async (req, res) => {
+  const Permission = ac.can(req.user.role).deleteAny('delete')
+  if(Permission.granted) {
+    const userId = req.params.id
   try {
     const query = {
       where: {
-        id: req.params.id
+        id: userId
       },
     };
-    await UserModel.destroy(query);
+    await models.UserModel.destroy(query);
     res.status(200).json({
       message: "User has successfully been deleted",
     });
   } catch (err) {
     res.status(500).json({
       message: "Error: User has not been deleted",
-    });
-  }
+    })
+    }
+   } else {
+     res.status(403).json({message: "Not an Admin"});
+   }
 });
+
 
 module.exports = router;
