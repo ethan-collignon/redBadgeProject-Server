@@ -92,7 +92,7 @@ ac.grant("user")
 
 /*Get all users */ /*locked behind admin */
 router.get("/getUsers", validateJWT, async (req, res) => {
-  const permission = ac.can(req.user.role).readAny("getUsers")
+  const Permission = ac.can(req.user.role).readAny("getUsers")
   if(Permission.granted) {
     try {
       const user = await models.UserModel.findAll();
@@ -108,7 +108,7 @@ router.get("/getUsers", validateJWT, async (req, res) => {
 
 /*Delete users*/ /*locked behind admin*/
 router.delete("/delete/:id", validateJWT, async (req, res) => {
-  const permission = ac.can(req.user.role).deleteAny('delete')
+  const Permission = ac.can(req.user.role).deleteAny('delete')
   if(Permission.granted) {
     const userId = req.params.id
   try {
