@@ -92,9 +92,10 @@ ac.grant("user")
 
 /*Get all users */ /*locked behind admin */
 router.get("/getUsers", validateJWT, async (req, res) => {
+  const permission = ac.can(req.user.role).readAny("getUsers")
   if(Permission.granted) {
     try {
-      let user = await models.UserModel.findAll();
+      const user = await models.UserModel.findAll();
       res.status(200).json(user);
     } catch (err) {
       res.status(500).json({ error: err });
@@ -107,26 +108,28 @@ router.get("/getUsers", validateJWT, async (req, res) => {
 
 /*Delete users*/ /*locked behind admin*/
 router.delete("/delete/:id", validateJWT, async (req, res) => {
+  const permission = ac.can(req.user.role).deleteAny('delete')
   if(Permission.granted) {
+    const userId = req.params.id
   try {
     const query = {
       where: {
-        id: req.params.id
+        id: userId
       },
     };
-    await UserModel.destroy(query);
+    await models.UserModel.destroy(query);
     res.status(200).json({
       message: "User has successfully been deleted",
     });
   } catch (err) {
     res.status(500).json({
       message: "Error: User has not been deleted",
-    } else {
-      res.status(403).json({ message: "Not an Admin."})
+    })
     }
-    );
+   } else {
+     res.status(403).json({message: "Not an Admin"});
    }
- }
 });
+
 
 module.exports = router;
