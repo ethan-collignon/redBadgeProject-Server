@@ -60,9 +60,8 @@ router.put("/update/:id", validateJWT, async (req, res) => {
   try {
     const updatedCampsiteReview = await CampsiteModel.update({ siteName, review, cost, rating },
       {where: {
-        // id: req.params.id, idk if I need this anymore after added the DB Asso
+        id: req.params.id,
         userId: req.user.id
-        // owner_id: req.user.id
       }})
       res.status(200).json({ message: "updated successfully", updatedCampsiteReview})
   } catch (err){
