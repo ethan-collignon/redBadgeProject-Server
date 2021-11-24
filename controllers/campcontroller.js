@@ -76,7 +76,7 @@ router.delete("/delete/:id", validateJWT, async (req, res) => {
   try{
     const query = {
       where: {
-        // id: req.params.id, same as above
+        id: req.params.id, 
         userId: req.user.id
         // owner_id: req.user.id
       }
