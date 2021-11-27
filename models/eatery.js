@@ -13,7 +13,7 @@ const Eatery = db.define("eatery", {
         unique: false,
     },
     cost: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
         unique: false,
     },
