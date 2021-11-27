@@ -8,14 +8,12 @@ const { CampsiteModel } = require("../models");
 /*Campsite Review Create*/
 router.post("/create", validateJWT, async (req, res) => {
   const { siteName, review, cost, rating,} = req.body.campsite;
-  // const { id } = req.user;
   const campsiteEntry = {
     siteName,
     review,
     cost,
     rating,
     userId: req.user.id
-    // owner_id: req.user.id
   }
   try {
     const newCampsiteEntry = await CampsiteModel.create(campsiteEntry);

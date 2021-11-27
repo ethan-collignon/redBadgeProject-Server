@@ -13,7 +13,7 @@ const Campsite = db.define("campsite", {
         unique: false,
     },
     cost: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
         unique: false,
     },
