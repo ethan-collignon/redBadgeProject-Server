@@ -7,13 +7,12 @@ const { EateryModel } = require("../models");
 /*Eatery Review Create*/
 router.post("/create", validateJWT, async (req, res) => {
     const { eateryName, review, cost, rating } = req.body.eatery;
-    // const { id } = req.user;
     const eateryEntry = {
       eateryName,
       review,
       cost,
       rating,
-      // owner_id: req.user.id
+      userId: req.user.id
     }
     try {
       const newEateryEntry = await EateryModel.create(eateryEntry);
@@ -37,11 +36,10 @@ router.post("/create", validateJWT, async (req, res) => {
 
 /*Get Eatery Reviews by user */
 router.get("/:id", validateJWT, async (req, res) => {
-  // let { id } = req.params;
   try{
     const userEateryReviews = await EateryModel.findAll({
       where: {
-        // owner_id: req.user.id
+        userId: req.user.id
       }
     });
     res.status(200).json(userEateryReviews);
@@ -58,7 +56,7 @@ router.put("/update/:id", validateJWT, async (req, res) => {
     const updatedEateryReview = await EateryModel.update({ eateryName, review, cost, rating },
       {where: {
         id: req.params.id,
-        // owner_id: req.user.id
+        userId: req.user.id  
       }})
       res.status(200).json({ message: "updated successfully", updatedEateryReview})
   } catch (err){
@@ -73,7 +71,7 @@ router.delete("/delete/:id", validateJWT, async (req, res) => {
     const query = {
       where: {
         id: req.params.id,
-        // owner_id: req.user.id
+        userId: req.user.id
       }
     }
     await EateryModel.destroy(query)
