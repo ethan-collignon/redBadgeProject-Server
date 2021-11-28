@@ -37,7 +37,6 @@ router.post("/create", validateJWT, async (req, res) => {
 
 /*Get Camp Reviews by user */
 router.get("/:id", validateJWT, async (req, res) => {
-  // let { id } = req.params;
   try{
     const userCampReviews = await CampsiteModel.findAll({
       where: {
@@ -75,7 +74,6 @@ router.delete("/delete/:id", validateJWT, async (req, res) => {
       where: {
         id: req.params.id, 
         userId: req.user.id
-        // owner_id: req.user.id
       }
     }
     await CampsiteModel.destroy(query)
